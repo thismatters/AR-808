@@ -1,2 +1,2 @@
 # AR-808
-Arduino based rhythm composer
+ATMega based rhythm composer
