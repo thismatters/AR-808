@@ -1,5 +1,4 @@
-// CPU STUFF
-
+#define F_CPU 16000000
 #define N_CHANNELS      5
 #define N_BUTTON_ROWS   4
 #define N_FUNC_ROWS     4
@@ -19,6 +18,18 @@
     // function_row2
     // function_row3
 
+
+// From LightController.ino, for reference:
+// int feedback_pins[N] = {5, 6, 7, 8, 12, 11, 10, 9};
+// int output_pins[N] = {3, 2, A0, A1, A5, A4, A3, A2};
+// void setup() {
+//     for (int i=0; i<N; i++) {
+//         pinMode(feedback_pins[i], INPUT);
+//         pinMode(output_pins[i], OUTPUT);
+//         lights_on[i] = false;
+//         lights_in[i] = false;
+//     }
+// }
 
 // initialize
     // Set up timer
@@ -45,6 +56,10 @@ int main(void) {
 
     // do functions according to how the knobs are set
     
+    // if playing
+        // grab next beat bytes from memory (eeprom or program space if already loaded)
+    
+
     // if next beat is unset
         // load next beat from memory
         // push next beat to MCP
