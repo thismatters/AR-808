@@ -9,6 +9,12 @@ int button_rows[N_BUTTON_ROWS] = {8, 5, 6, 7};
 int led_row_pins[N_LED_ROWS] = {9, 10, 11, 12};
 // int func_rows[N_FUNC_ROWS] = {}; // these are on the MCP
 bool desired_led_state[N_CHANNELS][N_LED_ROWS] = {0};
+uint8_t selected_voice;
+uint8_t selected_mode;
+uint8_t selected_autofill;
+uint8_t selected_ab;
+uint8_t selected_if;
+uint8_t selected_prescale;
 // see ergodox source for dealing with the MCP!!
     // channel0
     // channel1
@@ -51,7 +57,7 @@ uint8_t read_button_state() {/* read the input pins on the atmega*/
 void  set_led_state(uint8_t state) {/* set the led output pins */}
 
 void enact_selector_state(int chan, uint8_t state) {
-    // decode the selector state and do the appropriate things
+    /* decode the selector state and correlate it to the active channel */
     switch (chan) {
         case 0:
             // voice selector
@@ -93,9 +99,20 @@ void enact_selector_state(int chan, uint8_t state) {
     }
 }
 
+void set_selected_mode(uint8_t mode) {
+    selected_mode = mode;
+    // perhaps use this to set the function that will be executed by the buttons?
+    // see default--matrix-control.h from ergodox source
+}
+void set_selected_voice(uint8_t voice) {selected_voice = voice;}
+void set_selected_autofill(uint8_t autofill) {selected_autofill = autofill;}
+void set_selected_ab(uint8_t ab) {selected_ab = ab;}
+void set_selected_if(uint8_t if_sel) {selected_if = if_sel;}
+void set_selected_prescale(uint8_t prescale) {selected_prescale = prescale;}
+
 int main(void) {  
-    // scan the input channels
     int row_pin;
+    // cycle which output channel is active
     for(int chan=0; chan<N_CHANNELS; chan++) {
         // activate channel
         chan_pin = channels[chan];
@@ -110,11 +127,21 @@ int main(void) {
                 set_pin_low(row_pin);
             }
         }
+
+        // check tempo and update timer appropriately
+
+        // if playing
+            // grab next beat bytes from memory (eeprom or program space if already loaded)
+            // if next beat is unset
+                // load next beat from memory
+                // push next beat to MCP
+                // set next beat flag
         
         // read states of inputs on this channel
         selector_state = read_selector_state();
         // decode input_state
         enact_selector_state(chan, selector_state);
+
         button_state = read_button_state();
 
         // turn off LEDs on this channel
@@ -126,19 +153,4 @@ int main(void) {
         // deactivate channels[chan]
         set_pin_off(chan_pin);
     }
-    // every so often change which output channel is active
-    // correlate the input codes to functions per each output
-    // check tempo and update timer appropriately
-
-    // do functions according to how the knobs are set
-    
-    // if playing
-        // grab next beat bytes from memory (eeprom or program space if already loaded)
-
-
-    // if next beat is unset
-        // load next beat from memory
-        // push next beat to MCP
-        // set next beat flag
-      
 }
